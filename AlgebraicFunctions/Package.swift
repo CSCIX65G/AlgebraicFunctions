@@ -32,11 +32,19 @@ let package = Package(
             ]
         ),
         .target(
-            name: "AlgebraicFunctions"
+            name: "AlgebraicFunctions",
+            dependencies: [
+                "AlgebraicFunctionsPlugin",
+                .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
+                .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
+            ]
         ),
         .testTarget(
             name: "AlgebraicFunctionsTests",
-            dependencies: ["AlgebraicFunctions"]
+            dependencies: [
+                "AlgebraicFunctions",
+                .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax")
+            ]
         ),
     ]
 )

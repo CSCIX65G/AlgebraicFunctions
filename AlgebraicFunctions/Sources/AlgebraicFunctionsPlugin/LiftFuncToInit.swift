@@ -8,7 +8,7 @@
 import SwiftSyntax
 import SwiftSyntaxMacros
 
-public struct AlgebraicFunctionsMacro: ExpressionMacro {
+public struct LiftFuncToInitMacro: ExpressionMacro {
     public static func expansion(
         of node: some FreestandingMacroExpansionSyntax,
         in context: some MacroExpansionContext

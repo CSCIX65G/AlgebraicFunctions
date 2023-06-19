@@ -1,12 +1,25 @@
 import XCTest
+import SwiftSyntax
+import SwiftSyntaxMacros
+import SwiftSyntaxMacrosTestSupport
 @testable import AlgebraicFunctions
+@testable import AlgebraicFunctionsPlugin
+
+let testMacros: [String: Macro.Type] = [
+    "LiftFuncToInit" : LiftFuncToInitMacro.self,
+]
 
 final class AlgebraicFunctionsTests: XCTestCase {
-    func testExample() throws {
-        // XCTest Documentation
-        // https://developer.apple.com/documentation/xctest
-
-        // Defining Test Cases and Test Methods
-        // https://developer.apple.com/documentation/xctest/defining_test_cases_and_test_methods
+    func testMacro() throws {
+        assertMacroExpansion("", expandedSource: "", macros: [:])
+//        assertMacroExpansion(
+//            """
+//            //#stringify(a + b)
+//            """,
+//            expandedSource: """
+//            //(a + b, "a + b")
+//            """,
+//            macros: testMacros
+//        )
     }
 }

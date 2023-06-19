@@ -12,7 +12,7 @@ import SwiftSyntaxMacros
 @main
 struct AlgebraicFunctionsPlugin: CompilerPlugin {
     let providingMacros: [any Macro.Type] = [
-        AlgebraicFunctionsMacro.self,
+        LiftFuncToInitMacro.self,
     ]
 }
 #endif
