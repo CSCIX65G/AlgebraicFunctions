@@ -14,7 +14,8 @@ final class AlgebraicFunctionsTests: XCTestCase {
         assertMacroExpansion(
             """
             @LiftFuncToInit
-            func doubler(_ anInt: Int) -> Double { .init(2 * anInt) }
+            @inlinable
+            public func doubler(_ anInt: Int) -> Double { .init(2 * anInt) }
             """,
             expandedSource: """
             
