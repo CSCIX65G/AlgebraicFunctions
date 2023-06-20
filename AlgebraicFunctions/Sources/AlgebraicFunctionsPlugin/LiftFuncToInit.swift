@@ -8,15 +8,20 @@
 import SwiftSyntax
 import SwiftSyntaxMacros
 
-public struct LiftFuncToInitMacro: ExpressionMacro {
-    public static func expansion(
-        of node: some FreestandingMacroExpansionSyntax,
-        in context: some MacroExpansionContext
-    ) -> ExprSyntax {
-        let generator = CodeGenerator(macro: node, context: context)
-        return generator.generate()
+public struct LiftFuncToInitMacro: PeerMacro {
+    public static func expansion<
+        Context: MacroExpansionContext,
+        Declaration: DeclSyntaxProtocol
+    >(
+        of node: AttributeSyntax,
+        providingPeersOf declaration: Declaration,
+        in context: Context
+    ) throws -> [DeclSyntax] {
+        [
+            DeclSyntax(stringLiteral: "")
+        ]
     }
-
+    
     private struct CodeGenerator {
         let macro: any FreestandingMacroExpansionSyntax
         let context: any MacroExpansionContext

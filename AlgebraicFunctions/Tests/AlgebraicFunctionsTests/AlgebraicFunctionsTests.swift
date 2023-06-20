@@ -11,15 +11,18 @@ let testMacros: [String: Macro.Type] = [
 
 final class AlgebraicFunctionsTests: XCTestCase {
     func testMacro() throws {
-        assertMacroExpansion("", expandedSource: "", macros: [:])
-//        assertMacroExpansion(
-//            """
-//            //#stringify(a + b)
-//            """,
-//            expandedSource: """
-//            //(a + b, "a + b")
-//            """,
-//            macros: testMacros
-//        )
+        assertMacroExpansion(
+            """
+            @LiftFuncToInit
+            func doubler(_ anInt: Int) -> Double { .init(2 * anInt) }
+            """,
+            expandedSource: """
+            
+            func doubler(_ anInt: Int) -> Double {
+                .init(2 * anInt)
+            }
+            """,
+            macros: testMacros
+        )
     }
 }

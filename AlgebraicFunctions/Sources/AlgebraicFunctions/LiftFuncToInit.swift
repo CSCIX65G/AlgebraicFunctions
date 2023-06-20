@@ -7,9 +7,9 @@
 import AlgebraicFunctionsPlugin
 
 @attached(peer, names: arbitrary)
-public macro liftFuncToInit(
-    _ expression: @autoclosure () throws -> Bool,
-    _ message: @autoclosure () -> String = "",
+public macro LiftFuncToInit<A, B>(
+    _ expression: (A) async throws -> B,
+    _ message: @autoclosure () -> String = "Lift func to init",
     file: StaticString = #filePath,
     line: UInt = #line,
     verbose: Bool = false
