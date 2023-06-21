@@ -22,6 +22,10 @@ let package = Package(
             url: "https://github.com/apple/swift-syntax.git",
             from: "509.0.0-swift-DEVELOPMENT-SNAPSHOT-2023-06-05-a"
         ),
+        .package(
+            url: "https://github.com/kishikawakatsumi/swift-power-assert.git",
+            from: "0.8.3"
+        ),
     ],
     targets: [
         .macro(
@@ -43,7 +47,8 @@ let package = Package(
             name: "AlgebraicFunctionsTests",
             dependencies: [
                 "AlgebraicFunctions",
-                .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax")
+                .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
+                .product(name: "PowerAssert", package: "swift-power-assert"),
             ]
         ),
     ]
