@@ -52,63 +52,22 @@ public struct Lift: PeerMacro {
         guard let extType = fdecl.signature.output?.returnType else {
             throw Error.nilReturnType
         }
-        guard let statements = fdecl.body?.statements else {
-            throw Error.noStatements
-        }
-        let paramList = fdecl.signature.input.parameterList
-        guard paramList.count == 1, let param = paramList.first else {
-            throw Error.oneArgumentOnly
-        }
-        let argExternalName = fdecl.identifier.description
-        let newParam = param.with(\.firstName, .identifier(argExternalName))
-        let newParamList = paramList.replacing(childAt: 0, with: newParam)
-        let newInput = fdecl.signature.input.with(\.parameterList, newParamList)
 
-        guard let output = ExtensionDeclSyntax(
-            leadingTrivia: .carriageReturnLineFeed,
-            attributes: .none,
-            modifiers: .none,
-            extensionKeyword: .keyword(.extension),
-            extendedType: extType,
-            inheritanceClause: .none,
-            genericWhereClause: .none,
-            memberBlock: .init(
-                leftBrace: .leftBraceToken(),
-                members: .init([
-                    .init(
-                        leadingTrivia: .none,
-                        decl: InitializerDeclSyntax.init(
-                            leadingTrivia: .none, //.spaces(4),
-                            attributes: .init(arrayLiteral: .attribute(.init(stringLiteral: "@inlinable"))),
-                            modifiers: fdecl.modifiers,
-                            initKeyword: .keyword(.`init`),
-                            optionalMark: .none,
-                            genericParameterClause: .none,
-                            signature: .init(input: newInput),
-                            genericWhereClause: .none,
-                            body: .init(statements: statements),
-                            trailingTrivia: .none
-                        ),
-                        trailingTrivia: .none
-                    )
-                ]),
-                rightBrace: .rightBraceToken()
-            ),
-            trailingTrivia: .carriageReturnLineFeed
-        ).as(DeclSyntax.self) else {
-            throw Error.translationFailed
-        }
         return [
-            output
-        ]
-    }
-    
-    private struct CodeGenerator {
-        let macro: any FreestandingMacroExpansionSyntax
-        let context: any MacroExpansionContext
-        
-        func generate() -> ExprSyntax {
-            return ExprSyntax("()").with(\.leadingTrivia, macro.leadingTrivia)
-        }
+            ExtensionDeclSyntax(
+                extensionKeyword: .keyword(.extension),
+                extendedType: extType,
+                genericWhereClause: .none,
+                memberBlock: .init(
+                    leftBrace: .leftBraceToken(),
+                    members: .init([
+                        .init(decl: try funcToInit(fdecl: fdecl))
+                    ]),
+                    rightBrace: .rightBraceToken()
+                )
+            )
+            .with(\.leadingTrivia, .carriageReturnLineFeed)
+            .with(\.trailingTrivia, .carriageReturnLineFeed)
+        ].compactMap { $0.as(DeclSyntax.self)  }
     }
 }
