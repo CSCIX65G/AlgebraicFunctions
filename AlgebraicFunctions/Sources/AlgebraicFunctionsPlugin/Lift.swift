@@ -8,29 +8,36 @@
 import SwiftSyntax
 import SwiftSyntaxMacros
 
-enum Error: Swift.Error {
+public enum LiftOperation {
+    case funcToInt
+}
+
+public enum Error: Swift.Error {
     case invalidDecl(is: DeclSyntaxProtocol, shouldBe: Any.Type)
     case nilReturnType
     case translationFailed
     case noStatements
+    case oneArgumentOnly
 }
 
 extension Error: CustomStringConvertible {
-    var description: String {
+    public var description: String {
         switch self {
             case let .invalidDecl(is: whatItIs, shouldBe: whatItShouldBe):
-                "LiftFuncToInit only works on funcs. Provided syntax of \(whatItIs.self) should be \(whatItShouldBe)"
+                "Lift only works on funcs. Provided syntax of \(whatItIs.self) should be \(whatItShouldBe)"
             case .nilReturnType:
-                "LiftFuncToInit requires a valid return type"
+                "Lift requires a valid return type"
             case .translationFailed:
-                "LiftFuncToInit failed to generate"
+                "Lift failed to generate"
             case .noStatements:
-                "LiftFuncToInit should have some statements in the body"
+                "Lift should have some statements in the body"
+            case .oneArgumentOnly:
+                "Lift should have exactly one arg"
         }
     }
 }
 
-public struct LiftFuncToInitMacro: PeerMacro {
+public struct Lift: PeerMacro {
     public static func expansion<
         Context: MacroExpansionContext,
         Declaration: DeclSyntaxProtocol
@@ -45,15 +52,22 @@ public struct LiftFuncToInitMacro: PeerMacro {
         guard let extType = fdecl.signature.output?.returnType else {
             throw Error.nilReturnType
         }
-        guard let rawStatements = fdecl.body?.statements else {
+        guard let statements = fdecl.body?.statements else {
             throw Error.noStatements
         }
-        let statements = rawStatements
-        
+        let paramList = fdecl.signature.input.parameterList
+        guard paramList.count == 1, let param = paramList.first else {
+            throw Error.oneArgumentOnly
+        }
+        let argExternalName = fdecl.identifier.description
+        let newParam = param.with(\.firstName, .identifier(argExternalName))
+        let newParamList = paramList.replacing(childAt: 0, with: newParam)
+        let newInput = fdecl.signature.input.with(\.parameterList, newParamList)
+
         guard let output = ExtensionDeclSyntax(
-            leadingTrivia: .carriageReturn,
+            leadingTrivia: .carriageReturnLineFeed,
             attributes: .none,
-            modifiers: fdecl.modifiers,
+            modifiers: .none,
             extensionKeyword: .keyword(.extension),
             extendedType: extType,
             inheritanceClause: .none,
@@ -64,13 +78,13 @@ public struct LiftFuncToInitMacro: PeerMacro {
                     .init(
                         leadingTrivia: .none,
                         decl: InitializerDeclSyntax.init(
-                            leadingTrivia: .spaces(4),
-                            attributes: .none,
-                            modifiers: .none,
+                            leadingTrivia: .none, //.spaces(4),
+                            attributes: .init(arrayLiteral: .attribute(.init(stringLiteral: "@inlinable"))),
+                            modifiers: fdecl.modifiers,
                             initKeyword: .keyword(.`init`),
                             optionalMark: .none,
                             genericParameterClause: .none,
-                            signature: .init(input: fdecl.signature.input),
+                            signature: .init(input: newInput),
                             genericWhereClause: .none,
                             body: .init(statements: statements),
                             trailingTrivia: .none
