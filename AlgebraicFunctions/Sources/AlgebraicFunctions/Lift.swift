@@ -8,7 +8,7 @@ import AlgebraicFunctionsPlugin
 
 @attached(peer, names: arbitrary)
 public macro Lift<A, B>(
-    _ type: LiftOperation,
+    operation: LiftOperation,
     file: StaticString = #filePath,
     line: UInt = #line
 ) = #externalMacro(module: "AlgebraicFunctionsPlugin", type: "Lift")

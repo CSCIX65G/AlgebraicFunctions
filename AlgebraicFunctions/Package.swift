@@ -14,7 +14,11 @@ let package = Package(
     products: [
         .library(
             name: "AlgebraicFunctions",
-            targets: ["AlgebraicFunctions"]
+            targets: [
+                "AlgebraicFunctions",
+                "Lifts",
+                "Lowers"
+            ]
         ),
     ],
     dependencies: [
@@ -28,17 +32,29 @@ let package = Package(
         ),
     ],
     targets: [
+        .target(
+            name: "AlgebraicFunctions",
+            dependencies: [
+                "AlgebraicFunctionsPlugin"
+            ]
+        ),
         .macro(
             name: "AlgebraicFunctionsPlugin",
+            dependencies: [
+                "Lifts",
+                "Lowers"
+            ]
+        ),
+        .target(
+            name: "Lifts",
             dependencies: [
                 .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
                 .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
             ]
         ),
         .target(
-            name: "AlgebraicFunctions",
+            name: "Lowers",
             dependencies: [
-                "AlgebraicFunctionsPlugin",
                 .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
                 .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
             ]

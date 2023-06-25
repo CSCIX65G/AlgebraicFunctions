@@ -1,17 +1,18 @@
 //
-//  Lift.swift
+//  Lower.swift
 //
 //
-//  Created by Van Simmons on 6/18/23.
+//  Created by Van Simmons on 6/25/23.
 //
+
 import SwiftSyntax
 import SwiftSyntaxMacros
 
-public enum LiftOperation {
-    case funcToInit
+public enum LowerOperation {
+    case initToFunc
 }
 
-public enum LiftError: Swift.Error {
+public enum LowerError: Swift.Error {
     case invalidDecl(is: DeclSyntaxProtocol, shouldBe: Any.Type)
     case nilReturnType
     case translationFailed
@@ -19,7 +20,7 @@ public enum LiftError: Swift.Error {
     case oneArgumentOnly
 }
 
-extension LiftError: CustomStringConvertible {
+extension LowerError: CustomStringConvertible {
     public var description: String {
         switch self {
             case let .invalidDecl(is: whatItIs, shouldBe: whatItShouldBe):
@@ -36,7 +37,7 @@ extension LiftError: CustomStringConvertible {
     }
 }
 
-public struct Lift: PeerMacro {
+public struct Lower: PeerMacro {
     public static func expansion<
         Context: MacroExpansionContext,
         Declaration: DeclSyntaxProtocol
@@ -46,10 +47,10 @@ public struct Lift: PeerMacro {
         in context: Context
     ) throws -> [DeclSyntax] {
         guard let fdecl = declaration.as(FunctionDeclSyntax.self) else {
-            throw LiftError.invalidDecl(is: declaration, shouldBe: FunctionDeclSyntax.self)
+            throw LowerError.invalidDecl(is: declaration, shouldBe: FunctionDeclSyntax.self)
         }
         guard let extType = fdecl.signature.output?.returnType else {
-            throw LiftError.nilReturnType
+            throw LowerError.nilReturnType
         }
 
         return [

@@ -24,29 +24,32 @@ final class LiftTests: XCTestCase {
 
     override func tearDownWithError() throws { }
 
-    func testMacro() throws {
+    func testLiftFuncToInit() throws {
         assertMacroExpansion(
             """
-            @Lift(.funcToInit)
+            @Lift(operation: .funcToInit)
             @inlinable
             public func doubler(_ anInt: Int) -> Double {
-                .init(2 * anInt)
+                let value = 2 * anInt
+                return .init(value)
             }
             """,
             expandedSource: """
             @inlinable
             public func doubler(_ anInt: Int) -> Double {
-                .init(2 * anInt)
+                let value = 2 * anInt
+                return .init(value)
             }
 
             extension Double {
                 @inlinable
                 public init(doubler anInt: Int) {
-                    .init(2 * anInt)
+                    let value = 2 * anInt
+                    self = .init(value)
                 }
             }
 
-            
+
             """,
             macros: testMacros
         )
