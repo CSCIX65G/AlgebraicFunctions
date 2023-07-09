@@ -22,7 +22,7 @@ class FuncToInitRewriter: SyntaxRewriter {
     }
 }
 
-func funcToInit(
+public func funcToInit(
     fdecl: FunctionDeclSyntax
 ) throws -> InitializerDeclSyntax {
     guard let _ = fdecl.signature.output?.returnType else {

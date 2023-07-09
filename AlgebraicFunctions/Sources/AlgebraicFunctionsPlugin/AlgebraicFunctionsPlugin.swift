@@ -8,8 +8,6 @@
 #if canImport(SwiftCompilerPlugin)
 import SwiftCompilerPlugin
 import SwiftSyntaxMacros
-import Lifts
-import Lowers
 
 @main
 struct AlgebraicFunctionsPlugin: CompilerPlugin {

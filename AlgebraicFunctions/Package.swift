@@ -12,12 +12,14 @@ let package = Package(
         .macCatalyst(.v13)
     ],
     products: [
+        .executable(
+            name: "Examples",
+            targets: ["Examples"]
+        ),
         .library(
             name: "AlgebraicFunctions",
             targets: [
-                "AlgebraicFunctions",
-                "Lifts",
-                "Lowers"
+                "AlgebraicFunctions"
             ]
         ),
     ],
@@ -32,6 +34,9 @@ let package = Package(
         ),
     ],
     targets: [
+        .executableTarget(
+            name: "Examples"
+        ),
         .target(
             name: "AlgebraicFunctions",
             dependencies: [
@@ -41,23 +46,11 @@ let package = Package(
         .macro(
             name: "AlgebraicFunctionsPlugin",
             dependencies: [
-                "Lifts",
-                "Lowers"
-            ]
-        ),
-        .target(
-            name: "Lifts",
-            dependencies: [
                 .product(name: "SwiftSyntax", package: "swift-syntax"),
                 .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
-                .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
-            ]
-        ),
-        .target(
-            name: "Lowers",
-            dependencies: [
-                .product(name: "SwiftSyntax", package: "swift-syntax"),
-                .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
+                .product(name: "SwiftOperators", package: "swift-syntax"),
+                .product(name: "SwiftParser", package: "swift-syntax"),
+                .product(name: "SwiftParserDiagnostics", package: "swift-syntax"),
                 .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
             ]
         ),
@@ -65,9 +58,6 @@ let package = Package(
             name: "AlgebraicFunctionsTests",
             dependencies: [
                 "AlgebraicFunctions",
-                "AlgebraicFunctionsPlugin",
-                "Lifts",
-                "Lowers",
                 .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
                 .product(name: "PowerAssert", package: "swift-power-assert"),
             ]

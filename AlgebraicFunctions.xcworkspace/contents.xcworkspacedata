@@ -4,4 +4,7 @@
    <FileRef
       location = "group:AlgebraicFunctions">
    </FileRef>
+   <FileRef
+      location = "group:AlgebraicFunctions.xctestplan">
+   </FileRef>
 </Workspace>

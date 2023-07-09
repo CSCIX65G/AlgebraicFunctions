@@ -13,8 +13,6 @@ import PowerAssert
 
 @testable import AlgebraicFunctions
 @testable import AlgebraicFunctionsPlugin
-@testable import Lifts
-@testable import Lowers
 
 let testMacros: [String: Macro.Type] = [
     "Lift" : Lift.self,
