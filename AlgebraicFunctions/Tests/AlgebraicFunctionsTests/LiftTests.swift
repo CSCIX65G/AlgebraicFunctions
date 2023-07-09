@@ -45,8 +45,7 @@ final class LiftTests: XCTestCase {
             extension Double {
                 @inlinable
                 public init(doubler anInt: Int) {
-                    let value = 2 * anInt
-                    self = .init(value)
+                    self = doubler(anInt)
                 }
             }
 

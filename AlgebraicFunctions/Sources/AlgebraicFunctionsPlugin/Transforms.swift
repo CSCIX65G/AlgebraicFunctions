@@ -1,6 +1,6 @@
 //
-//  File.swift
-//  
+//  Transforms.swift
+//
 //
 //  Created by Van Simmons on 6/21/23.
 //
@@ -39,8 +39,11 @@ public func funcToInit(
     let newInput = fdecl.signature.input
         .with(\.parameterList, paramList.replacing(childAt: 0, with: newParam))
 
-    let rewriter = FuncToInitRewriter.init()
-    let newBody = rewriter.visit(body)
+    let firstName = param.firstName.text == "_" ? "" : "\(param.firstName.text): "
+    let secondName = newParam.secondName?.text ?? param.firstName.text
+
+//    let rewriter = FuncToInitRewriter.init()
+//    let newBody = rewriter.visit(body)
 
     return .init(
         attributes: .init(arrayLiteral: .attribute(.init(stringLiteral: "@inlinable"))),
@@ -49,6 +52,12 @@ public func funcToInit(
         genericParameterClause: .none,
         signature: .init(input: newInput),
         genericWhereClause: .none,
-        body: newBody
+        body: .init(
+            statements: .init(
+                arrayLiteral: """
+                    self = \(fdecl.identifier)(\(raw: firstName)\(raw: secondName))
+                """
+            )
+        )
     )
 }

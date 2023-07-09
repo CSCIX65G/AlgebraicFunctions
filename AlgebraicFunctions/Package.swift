@@ -35,7 +35,10 @@ let package = Package(
     ],
     targets: [
         .executableTarget(
-            name: "Examples"
+            name: "Examples",
+            dependencies: [
+                "AlgebraicFunctions"
+            ]
         ),
         .target(
             name: "AlgebraicFunctions",
